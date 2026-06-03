@@ -53,6 +53,31 @@ export NL_COOKIE="_t=xxxxx; _forum_session=xxxxxx"
 ```bash
 python main.py
 ```
+
+## ⏰ GitHub Actions 定时签到
+
+本仓库已内置 GitHub Actions 工作流：
+
+- 每天 **北京时间 10:00** 自动运行一次
+- 支持在 GitHub Actions 页面手动点击 `Run workflow` 触发
+
+### 配置 Cookie Secret
+
+进入仓库页面：
+
+```text
+Settings → Secrets and variables → Actions → New repository secret
+```
+
+新增 Secret：
+
+```text
+Name: NL_COOKIE
+Value: _t=xxxxx; _forum_session=xxxxxx
+```
+
+多账号时，每行填写一个账号的完整 Cookie。
+
 ## 📜 License
 本项目采用 MIT License 开源协议。
 

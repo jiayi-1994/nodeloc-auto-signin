@@ -1,0 +1,52 @@
+name: NodeLoc Auto Sign-in
+
+on:
+  # GitHub Actions cron 使用 UTC；02:00 UTC = 北京时间 10:00
+  schedule:
+    - cron: "0 2 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: nodeloc-auto-signin
+  cancel-in-progress: false
+
+jobs:
+  signin:
+    name: Run daily sign-in
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    env:
+      TZ: Asia/Shanghai
+      NL_COOKIE: ${{ secrets.NL_COOKIE }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Check required secret
+        run: |
+          if [ -z "$NL_COOKIE" ]; then
+            echo "::error::Missing repository secret NL_COOKIE"
+            exit 1
+          fi
+
+      - name: Check Chrome
+        run: google-chrome --version
+
+      - name: Run NodeLoc sign-in
+        run: python main.py
